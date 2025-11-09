@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ENTITY
+namespace ENTITY.Utilidades
 {
     public class Response<T>
     {
