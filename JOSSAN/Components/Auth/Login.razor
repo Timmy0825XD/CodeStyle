@@ -84,6 +84,7 @@
 
             // Llamar al servicio de login (ahora se llama Login, no LoginUsuarioAsync)
             var resultado = await UsuarioService.Login(loginRequest);
+            Console.WriteLine(resultado.Message);
 
             if (resultado.IsSuccess)
             {
