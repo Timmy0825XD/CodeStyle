@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DAL.Implementaciones
@@ -43,8 +42,6 @@ namespace DAL.Implementaciones
 
                     if (usuario != null)
                     {
-                        // Construir nombre completo
-                        usuario.NombreCompleto = $"{usuario.NombreCompleto}"; // Ya viene del query
                         return Response<LoginResponseDTO>.Done("Login exitoso", usuario);
                     }
                     else
@@ -52,6 +49,10 @@ namespace DAL.Implementaciones
                         return Response<LoginResponseDTO>.Fail("Credenciales inválidas");
                     }
                 }
+            }
+            catch (OracleException ex) when (ex.Number == 20001)
+            {
+                return Response<LoginResponseDTO>.Fail("Credenciales incorrectas o usuario inactivo");
             }
             catch (OracleException ex)
             {

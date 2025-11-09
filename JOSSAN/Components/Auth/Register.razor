@@ -1,0 +1,934 @@
+﻿@page "/Register"
+@using JOSSAN.Components.Layout
+@layout AuthLayout
+
+<div class="register-container">
+    <div class="register-card">
+        <div class="logo-section">
+            <div class="logo-circle">V</div>
+            <h1 class="logo-title">JOSSAN</h1>
+            <p class="logo-subtitle">Admin Panel</p>
+        </div>
+
+        <div class="welcome-text">
+            <h2>Crear una cuenta</h2>
+            <p>Completa tus datos para registrarte</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="progress-steps">
+            <div class="step @(paso == 1 ? "active" : paso > 1 ? "completed" : "")">
+                <div class="step-circle">1</div>
+                <span class="step-label">Datos Personales</span>
+            </div>
+            <div class="step-line @(paso > 1 ? "completed" : "")"></div>
+            <div class="step @(paso == 2 ? "active" : paso > 2 ? "completed" : "")">
+                <div class="step-circle">2</div>
+                <span class="step-label">Dirección</span>
+            </div>
+            <div class="step-line @(paso > 2 ? "completed" : "")"></div>
+            <div class="step @(paso == 3 ? "active" : paso > 3 ? "completed" : "")">
+                <div class="step-circle">3</div>
+                <span class="step-label">Seguridad</span>
+            </div>
+        </div>
+
+        <form class="register-form" @onsubmit="HandleSubmit">
+
+            <!-- PASO 1: Datos Personales -->
+            @if (paso == 1)
+            {
+                <div class="form-section">
+                    <h3 class="section-title">Información Personal</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Primer Nombre *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" class="form-input" placeholder="Juan" @bind="primerNombre" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Segundo Nombre</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" class="form-input" placeholder="Carlos (opcional)" @bind="segundoNombre" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Apellido Paterno *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" class="form-input" placeholder="Pérez" @bind="apellidoPaterno" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Apellido Materno *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input type="text" class="form-input" placeholder="García" @bind="apellidoMaterno" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Cédula *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🆔</span>
+                            <input type="text" class="form-input" placeholder="1234567890" @bind="cedula" required />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Teléfono Principal *</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">📱</span>
+                                <input type="tel" class="form-input" placeholder="+57 300 123 4567" @bind="telefonoPrincipal" required />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Teléfono Secundario</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">📱</span>
+                                <input type="tel" class="form-input" placeholder="+57 310 123 4567 (opcional)" @bind="telefonoSecundario" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Correo Electrónico *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input type="email" class="form-input" placeholder="correo@ejemplo.com" @bind="email" required />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- PASO 2: Dirección -->
+            @if (paso == 2)
+            {
+                <div class="form-section">
+                    <h3 class="section-title">Dirección de Residencia</h3>
+
+                    <div class="form-group">
+                        <label class="form-label">Ciudad *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🏙️</span>
+                            <select class="form-select" @bind="ciudadSeleccionada" required>
+                                <option value="">Selecciona una ciudad</option>
+                                @foreach (var ciudad in ciudades)
+                                {
+                                    <option value="@ciudad">@ciudad</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Dirección *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📍</span>
+                            <input type="text" class="form-input" placeholder="Calle 45 #12-34" @bind="direccion" required />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Barrio *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🏘️</span>
+                            <input type="text" class="form-input" placeholder="Centro" @bind="barrio" required />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Código Postal</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">📮</span>
+                                <input type="text" class="form-input" placeholder="200001 (opcional)" @bind="codigoPostal" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Referencia</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🗺️</span>
+                                <input type="text" class="form-input" placeholder="Frente al parque (opcional)" @bind="referencia" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- PASO 3: Contraseña -->
+            @if (paso == 3)
+            {
+                <div class="form-section">
+                    <h3 class="section-title">Seguridad de la Cuenta</h3>
+
+                    <div class="form-group">
+                        <label class="form-label">Contraseña *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="@(mostrarPassword ? "text" : "password")"
+                                   class="form-input"
+                                   placeholder="Mínimo 8 caracteres"
+                                   @bind="password"
+                                   required />
+                            <button type="button" class="toggle-password" @onclick="TogglePassword">
+                                @(mostrarPassword ? "👁️" : "👁️‍🗨️")
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-bar @GetPasswordStrength()"></div>
+                        </div>
+                        <span class="password-hint">@GetPasswordHint()</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Confirmar Contraseña *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="@(mostrarConfirmPassword ? "text" : "password")"
+                                   class="form-input"
+                                   placeholder="Repite tu contraseña"
+                                   @bind="confirmPassword"
+                                   required />
+                            <button type="button" class="toggle-password" @onclick="ToggleConfirmPassword">
+                                @(mostrarConfirmPassword ? "👁️" : "👁️‍🗨️")
+                            </button>
+                        </div>
+                    </div>
+
+                    <label class="checkbox-label">
+                        <input type="checkbox" @bind="aceptaTerminos" required />
+                        <span>
+                            Acepto los <a href="/terminos" class="link-text">términos y condiciones</a> y la
+                            <a href="/privacidad" class="link-text">política de privacidad</a>
+                        </span>
+                    </label>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(mensajeError))
+            {
+                <div class="error-message">
+                    <span>⚠️</span>
+                    <span>@mensajeError</span>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(mensajeExito))
+            {
+                <div class="success-message">
+                    <span>✅</span>
+                    <span>@mensajeExito</span>
+                </div>
+            }
+
+            <!-- Navigation Buttons -->
+            <div class="form-actions">
+                @if (paso > 1)
+                {
+                    <button type="button" class="btn-back" @onclick="PasoAnterior">
+                        <span>← Anterior</span>
+                    </button>
+                }
+
+                @if (paso < 3)
+                {
+                    <button type="button" class="btn-next" @onclick="PasoSiguiente">
+                        <span>Siguiente →</span>
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" class="btn-register" disabled="@cargando">
+                        @if (cargando)
+                        {
+                            <span class="spinner"></span>
+                            <span>Creando cuenta...</span>
+                        }
+                        else
+                        {
+                            <span>Crear Cuenta</span>
+                        }
+                    </button>
+                }
+            </div>
+        </form>
+
+        <div class="footer-text">
+            ¿Ya tienes cuenta? <a href="/login" class="link-text">Inicia sesión aquí</a>
+        </div>
+    </div>
+
+    <div class="background-decoration">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+    </div>
+</div>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .background-decoration {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .circle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .circle-1 {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        right: -100px;
+    }
+
+    .circle-2 {
+        width: 200px;
+        height: 200px;
+        bottom: -50px;
+        left: -50px;
+        animation-delay: 2s;
+    }
+
+    .circle-3 {
+        width: 150px;
+        height: 150px;
+        top: 50%;
+        left: 10%;
+        animation-delay: 4s;
+    }
+
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0) scale(1);
+        }
+
+        50% {
+            transform: translateY(-20px) scale(1.05);
+        }
+    }
+
+    .register-card {
+        background: white;
+        border-radius: 24px;
+        padding: 32px 40px;
+        width: 100%;
+        max-width: 650px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
+        animation: slideUp 0.5s ease;
+        max-height: 95vh;
+        overflow-y: auto;
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .logo-section {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .logo-circle {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        margin: 0 auto 10px;
+        box-shadow: 0 8px 16px rgba(168, 85, 247, 0.3);
+    }
+
+    .logo-title {
+        font-size: 26px;
+        font-weight: bold;
+        background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+    }
+
+    .logo-subtitle {
+        color: #9ca3af;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .welcome-text {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+        .welcome-text h2 {
+            font-size: 20px;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .welcome-text p {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+    /* Progress Steps */
+    .progress-steps {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 32px;
+        padding: 0 20px;
+    }
+
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        flex: 0 0 auto;
+    }
+
+    .step-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e5e7eb;
+        color: #9ca3af;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .step.active .step-circle {
+        background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+    }
+
+    .step.completed .step-circle {
+        background: #10b981;
+        color: white;
+    }
+
+    .step-label {
+        font-size: 11px;
+        color: #6b7280;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .step.active .step-label {
+        color: #a855f7;
+        font-weight: 600;
+    }
+
+    .step-line {
+        flex: 1;
+        height: 2px;
+        background: #e5e7eb;
+        margin: 0 8px;
+        transition: all 0.3s ease;
+    }
+
+        .step-line.completed {
+            background: #10b981;
+        }
+
+    /* Form Styles */
+    .register-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-section {
+        animation: fadeIn 0.3s ease;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    @@media (max-width: 640px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .progress-steps {
+            padding: 0 5px;
+        }
+
+        .step-label {
+            font-size: 10px;
+        }
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .form-label {
+        color: #374151;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 12px;
+        font-size: 16px;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .form-input, .form-select {
+        width: 100%;
+        padding: 11px 12px 11px 40px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+        }
+
+    .toggle-password {
+        position: absolute;
+        right: 12px;
+        background: none;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 4px;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+        z-index: 1;
+    }
+
+        .toggle-password:hover {
+            opacity: 1;
+        }
+
+    .password-strength {
+        width: 100%;
+        height: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 4px;
+    }
+
+    .strength-bar {
+        height: 100%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+
+        .strength-bar.weak {
+            width: 33%;
+            background: #ef4444;
+        }
+
+        .strength-bar.medium {
+            width: 66%;
+            background: #f59e0b;
+        }
+
+        .strength-bar.strong {
+            width: 100%;
+            background: #10b981;
+        }
+
+    .password-hint {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 2px;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        cursor: pointer;
+        color: #374151;
+        font-size: 12px;
+        line-height: 1.5;
+        margin-top: 8px;
+    }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #a855f7;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+    .link-text {
+        color: #a855f7;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+        .link-text:hover {
+            color: #7c3aed;
+        }
+
+    .error-message {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        background: #fee2e2;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        color: #991b1b;
+        font-size: 13px;
+        animation: shake 0.3s ease;
+    }
+
+    @@keyframes shake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+
+        25% {
+            transform: translateX(-5px);
+        }
+
+        75% {
+            transform: translateX(5px);
+        }
+    }
+
+    .success-message {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        background: #d1fae5;
+        border: 1px solid #a7f3d0;
+        border-radius: 8px;
+        color: #065f46;
+        font-size: 13px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+    }
+
+    .btn-back, .btn-next, .btn-register {
+        flex: 1;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: none;
+    }
+
+    .btn-back {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+        .btn-back:hover {
+            background: #e5e7eb;
+        }
+
+    .btn-next {
+        background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+    }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4);
+        }
+
+    .btn-register {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+        .btn-register:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+    .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .footer-text {
+        text-align: center;
+        margin-top: 20px;
+        color: #6b7280;
+        font-size: 13px;
+    }
+</style>
+
+@code {
+    private int paso = 1;
+
+    // Paso 1: Datos Personales
+    private string primerNombre = "";
+    private string segundoNombre = "";
+    private string apellidoPaterno = "";
+    private string apellidoMaterno = "";
+    private string cedula = "";
+    private string telefonoPrincipal = "";
+    private string telefonoSecundario = "";
+    private string email = "";
+
+    // Paso 2: Dirección
+    private string ciudadSeleccionada = "";
+    private string direccion = "";
+    private string barrio = "";
+    private string codigoPostal = "";
+    private string referencia = "";
+
+    private List<string> ciudades = new()
+    {
+        "Valledupar",
+        "Bogotá",
+        "Medellín",
+        "Cali",
+        "Barranquilla",
+        "Cartagena",
+        "Bucaramanga",
+        "Santa Marta",
+        "Cúcuta",
+        "Pereira"
+    };
+
+    // Paso 3: Contraseña
+    private string password = "";
+    private string confirmPassword = "";
+    private bool aceptaTerminos = false;
+    private bool mostrarPassword = false;
+    private bool mostrarConfirmPassword = false;
+
+    private bool cargando = false;
+    private string mensajeError = "";
+    private string mensajeExito = "";
+
+    private void PasoSiguiente()
+    {
+        mensajeError = "";
+
+        if (paso == 1)
+        {
+            if (string.IsNullOrWhiteSpace(primerNombre) || string.IsNullOrWhiteSpace(apellidoPaterno) ||
+                string.IsNullOrWhiteSpace(apellidoMaterno) || string.IsNullOrWhiteSpace(cedula) ||
+                string.IsNullOrWhiteSpace(telefonoPrincipal) || string.IsNullOrWhiteSpace(email))
+            {
+                mensajeError = "Por favor completa todos los campos obligatorios";
+                return;
+            }
+        }
+        else if (paso == 2)
+        {
+            if (string.IsNullOrWhiteSpace(ciudadSeleccionada) || string.IsNullOrWhiteSpace(direccion) ||
+                string.IsNullOrWhiteSpace(barrio))
+            {
+                mensajeError = "Por favor completa todos los campos obligatorios de dirección";
+                return;
+            }
+        }
+
+        paso++;
+    }
+
+    private void PasoAnterior()
+    {
+        mensajeError = "";
+        paso--;
+    }
+
+    private void TogglePassword()
+    {
+        mostrarPassword = !mostrarPassword;
+    }
+
+    private void ToggleConfirmPassword()
+    {
+        mostrarConfirmPassword = !mostrarConfirmPassword;
+    }
+
+    private string GetPasswordStrength()
+    {
+        if (string.IsNullOrEmpty(password)) return "";
+        if (password.Length < 6) return "weak";
+        if (password.Length < 10) return "medium";
+        return "strong";
+    }
+
+    private string GetPasswordHint()
+    {
+        var strength = GetPasswordStrength();
+        return strength switch
+        {
+            "weak" => "Contraseña débil - Agrega más caracteres",
+            "medium" => "Contraseña media - Considera agregar números y símbolos",
+            "strong" => "Contraseña fuerte ✓",
+            _ => "Mínimo 8 caracteres"
+        };
+    }
+
+    private async Task HandleSubmit()
+    {
+        mensajeError = "";
+        mensajeExito = "";
+
+        if (password != confirmPassword)
+        {
+            mensajeError = "Las contraseñas no coinciden";
+            return;
+        }
+
+        if (password.Length < 8)
+        {
+            mensajeError = "La contraseña debe tener al menos 8 caracteres";
+            return;
+        }
+
+        if (!aceptaTerminos)
+        {
+            mensajeError = "Debes aceptar los términos y condiciones";
+            return;
+        }
+
+        cargando = true;
+        StateHasChanged();
+
+        await Task.Delay(2000);
+
+        mensajeExito = "¡Cuenta creada exitosamente! Redirigiendo...";
+        StateHasChanged();
+
+        await Task.Delay(1500);
+        Console.WriteLine("Registro exitoso");
+        // NavigationManager.NavigateTo("/login");
+
+        cargando = false;
+    }
+}
